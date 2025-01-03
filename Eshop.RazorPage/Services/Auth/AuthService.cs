@@ -20,8 +20,16 @@ public class AuthService : IAuthService
 
     public async Task<ApiResult?> Logout()
     {
-        var result = await _Client.DeleteAsync("auth/login");
-        return await result.Content.ReadFromJsonAsync<ApiResult>();
+        try
+        {
+            var result = await _Client.DeleteAsync("auth/logout");
+            return await result.Content.ReadFromJsonAsync<ApiResult>();
+
+        }
+        catch (Exception)
+        {
+            return ApiResult.Error();
+        }
     }
 
     public async Task<ApiResult<LoginResponse>?> RefreshToken()
