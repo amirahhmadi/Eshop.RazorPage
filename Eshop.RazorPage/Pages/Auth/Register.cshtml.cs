@@ -8,7 +8,6 @@ using System.ComponentModel.DataAnnotations;
 namespace Eshop.RazorPage.Pages.Auth
 {
     [BindProperties]
-    [ValidateAntiForgeryToken]
     public class RegisterModel : BaseRazorPage
     {
         private readonly IAuthService _authService;

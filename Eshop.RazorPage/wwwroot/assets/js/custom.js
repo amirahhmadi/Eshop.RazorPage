@@ -2,7 +2,7 @@
     Swal.fire({
         title: "آیا از انجام عملیات اطمینان دارید ؟",
         icon: "info",
-        confirmButtonText: "بله ، مطمئن هستم",
+        confirmButtonText: "بله ، مطمعا هستم",
         cancelButtonText: "خیر",
         showCancelButton: true,
     }).then((result) => {
@@ -90,7 +90,7 @@ $(document).ready(function () {
             `);
             })
         }
-
+        
     });
 });
 

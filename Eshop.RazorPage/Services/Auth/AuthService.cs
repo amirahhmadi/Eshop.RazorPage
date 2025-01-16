@@ -38,7 +38,7 @@ public class AuthService : IAuthService
 
     public async Task<ApiResult<LoginResponse>?> RefreshToken()
     {
-        var refreshToken = _accessor.HttpContext.Request.Cookies["refreshToken"];
+        var refreshToken = _accessor.HttpContext?.Request.Cookies["refreshToken"];
         var result = await _Client.PostAsync($"auth/refreshToken?refreshToken={refreshToken}", null);
         return await result.Content.ReadFromJsonAsync<ApiResult<LoginResponse>>();
     }

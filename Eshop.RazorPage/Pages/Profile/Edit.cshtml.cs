@@ -43,6 +43,7 @@ namespace Eshop.RazorPage.Pages.Profile
         public string Email { get; set; }
 
         public Gender Gender { get; set; } = Gender.None;
+
         public async Task OnGet()
         {
             var user = await _userService.GetCurrentUser();
