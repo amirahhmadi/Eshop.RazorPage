@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿using Eshop.RazorPage.Infrastructure.CookieUtils;
 using Eshop.RazorPage.Infrastructure.RazorUtils;
 using Eshop.RazorPage.Services.Auth;
 using Eshop.RazorPage.Services.Banners;
@@ -9,7 +9,9 @@ using Eshop.RazorPage.Services.Orders;
 using Eshop.RazorPage.Services.Products;
 using Eshop.RazorPage.Services.Roles;
 using Eshop.RazorPage.Services.Sellers;
+//using Eshop.RazorPage.Services.ShippingMethods;
 using Eshop.RazorPage.Services.Sliders;
+//using Eshop.RazorPage.Services.Transactions;
 using Eshop.RazorPage.Services.UserAddress;
 using Eshop.RazorPage.Services.Users;
 
@@ -22,16 +24,32 @@ public static class RegisterDependencyServices
         var baseAddress = "https://localhost:5001/api/";
 
         services.AddHttpContextAccessor();
+
         services.AddScoped<HttpClientAuthorizationDelegatingHandler>();
         services.AddTransient<IRenderViewToString, RenderViewToString>();
+
         services.AddAutoMapper(typeof(RegisterDependencyServices).Assembly);
+        services.AddScoped<IMainPageService, MainPageService>();
 
+        services.AddScoped<ShopCartCookieManager>();
 
+        services.AddCookieManager();
 
         services.AddHttpClient<IAuthService, AuthService>(httpClient =>
         {
             httpClient.BaseAddress = new Uri(baseAddress);
         }).AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
+
+        //services.AddHttpClient<ITransactionService, TransactionService>(httpClient =>
+        //{
+        //    httpClient.BaseAddress = new Uri(baseAddress);
+        //}).AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
+
+
+        //services.AddHttpClient<IShippingMethodService, ShippingMethodService>(httpClient =>
+        //{
+        //    httpClient.BaseAddress = new Uri(baseAddress);
+        //}).AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
 
         services.AddHttpClient<IBannerService, BannerService>(httpClient =>
         {

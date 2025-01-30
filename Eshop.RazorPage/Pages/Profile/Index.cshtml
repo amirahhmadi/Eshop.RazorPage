@@ -1,6 +1,23 @@
 ﻿@page
+@using Eshop.RazorPage.Infrastructure
+@using Eshop.RazorPage.Services.Users
 @model Eshop.RazorPage.Pages.Profile.IndexModel
+@inject IUserService _userService
 @{
+    var currentUser = User.Identity.IsAuthenticated ? await _userService.GetCurrentUser() : null;
+
+    var userName = currentUser?.Name;
+    var userFamily = currentUser?.Family;
+
+    if (string.IsNullOrEmpty(userName))
+    {
+        userName = "";
+    }
+
+    if (string.IsNullOrEmpty(userFamily))
+    {
+        userFamily = "";
+    }
 }
 <div class="row mb-5">
     <partial name="Shared/Profile/_ProfileSideBar" />
@@ -14,31 +31,19 @@
                     <div class="row">
                         <div class="col-lg-6 mb-4">
                             <div class="text-sm text-muted">نام و نام خانوادگی:</div>
-                            <div class="text-dark font-weight-bold">جلال بهرامی راد</div>
+                            <div class="text-dark font-weight-bold">@userName @userFamily</div>
                         </div>
                         <div class="col-lg-6 mb-4">
                             <div class="text-sm text-muted">پست الکترونیک:</div>
-                            <div class="text-dark font-weight-bold">example@example.com</div>
+                            <div class="text-dark font-weight-bold">@currentUser.Email</div>
                         </div>
                         <div class="col-lg-6 mb-4">
                             <div class="text-sm text-muted">شماره تلفن همراه:</div>
-                            <div class="text-dark font-weight-bold">09104466813</div>
-                        </div>
-                        <div class="col-lg-6 mb-4">
-                            <div class="text-sm text-muted">کد ملی:</div>
-                            <div class="text-dark font-weight-bold">-</div>
-                        </div>
-                        <div class="col-lg-6 mb-4">
-                            <div class="text-sm text-muted">دریافت خبرنامه:</div>
-                            <div class="text-dark font-weight-bold">خیر</div>
-                        </div>
-                        <div class="col-lg-6 mb-4">
-                            <div class="text-sm text-muted">روش بازگشت وجه:</div>
-                            <div class="text-dark font-weight-bold">-</div>
+                            <div class="text-dark font-weight-bold">@currentUser.PhoneNumber</div>
                         </div>
                         <div class="col-12">
                             <div class="text-center">
-                                <a href="#" class="link--with-border-bottom">
+                                <a href="/profile/edit" class="link--with-border-bottom">
                                     <i class="far fa-edit"></i>
                                     ویرایش اطلاعات شخصی
                                 </a>

@@ -1,33 +1,46 @@
-using Eshop.RazorPage.Infrastructure;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
+using Eshop.RazorPage.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 
+
 builder.Services.RegisterApiServices();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddAuthorization(options =>
+builder.Services.AddAuthorization(option =>
 {
-    options.AddPolicy("Account", builder =>
+    option.AddPolicy("Account", builder =>
     {
         builder.RequireAuthenticatedUser();
+    });
+    option.AddPolicy("SellerPanel", builder =>
+    {
+        builder.RequireAuthenticatedUser();
+        builder.RequireAssertion(f => f.User.Claims
+            .Any(c => c.Type == ClaimTypes.Role && c.Value.Contains("Seller")));
+    });
+    option.AddPolicy("Admin", builder =>
+    {
+        builder.RequireAuthenticatedUser();
+        builder.RequireAssertion(f => f.User.Claims
+            .Any(c => c.Type == ClaimTypes.Role && c.Value.Contains("Admin")));
     });
 });
 
 builder.Services.AddRazorPages()
-                .AddRazorRuntimeCompilation()
-                .AddRazorPagesOptions(option =>
-                {
-                    option.Conventions.AuthorizeFolder("/Profile", "Account");
-                });
-
+    .AddRazorRuntimeCompilation()
+    .AddRazorPagesOptions(options =>
+    {
+        options.Conventions.AuthorizeFolder("/Profile", "Account");
+        options.Conventions.AuthorizeFolder("/SellerPanel", "SellerPanel");
+        options.Conventions.AuthorizeFolder("/Admin", "Admin");
+    });
 
 builder.Services.AddAuthentication(option =>
 {
@@ -49,14 +62,14 @@ builder.Services.AddAuthentication(option =>
     };
 });
 
-
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -69,6 +82,7 @@ app.Use(async (context, next) =>
     }
     await next();
 });
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -85,7 +99,9 @@ app.Use(async (context, next) =>
     }
 });
 app.UseAuthentication();
+
 app.UseAuthorization();
+
 
 app.MapRazorPages();
 app.Run();

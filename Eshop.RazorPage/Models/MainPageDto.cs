@@ -11,5 +11,6 @@ public class MainPageDto
     public List<ProductShopDto> SpectialProducts { get; set; }
     public List<ProductShopDto> LatestProducts { get; set; }
     public List<ProductShopDto> TopVisitProducts { get; set; }
+    public List<ProductShopDto> CategoryProduct { get; set; }
 
 }
